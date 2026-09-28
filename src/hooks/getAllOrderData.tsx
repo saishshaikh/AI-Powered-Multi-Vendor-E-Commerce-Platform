@@ -4,14 +4,18 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import axios from "axios";
-import { setAllOrderData } from "@/redux/orderSlice"; // 👈 आपकी redux file
+import { setAllOrderData } from "@/redux/orderSlice";
 
 function getAllOrdersData() {
   const dispatch = useDispatch<AppDispatch>();
-
   const { userData } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
+    if (!userData?._id) {
+      dispatch(setAllOrderData([]));
+      return;
+    }
+
     const fetchAllOrders = async () => {
       try {
         const res = await axios.get("/api/order/allOrder");

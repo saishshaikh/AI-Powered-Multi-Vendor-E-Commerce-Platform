@@ -29,8 +29,9 @@ export default function SignupPage() {
     setEmail("")
     setPassword("")
     router.push("/login")
-   } catch (error) {
+   } catch (error: any) {
     console.log(error)
+    alert(error?.response?.data?.message || "Registration failed. Please try again.")
     setLoading(false)
    }
 
