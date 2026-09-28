@@ -5,8 +5,7 @@ import { NextRequest, NextResponse } from "next/server"
 import Stripe from "stripe"
 
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!
-)
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "dummy_key_for_build");
 
 export async function POST(req:NextRequest){
     const sig = req.headers.get("stripe-signature")

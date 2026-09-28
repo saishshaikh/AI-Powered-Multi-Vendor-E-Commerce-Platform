@@ -6,7 +6,7 @@ import Product from "@/models/product.model";
 import User from "@/models/user.model";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "dummy_key_for_build");
 
 export async function POST(req: NextRequest) {
   try {
