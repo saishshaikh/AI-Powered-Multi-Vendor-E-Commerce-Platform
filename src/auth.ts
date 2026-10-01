@@ -45,19 +45,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     callbacks:{
         async signIn({user,account}) {
             if(account?.provider=="google"){
-                await connectDb()
-                let dbUser = await User.findOne({email:user.email})
-                if(!dbUser){
-                    dbUser = await User.create({
-                        name:user.name,
-                        email:user.email,
-                        image:user.image
-
-
-                    })
+                try {
+                    await connectDb()
+                    let dbUser = await User.findOne({email:user.email})
+                    if(!dbUser){
+                        dbUser = await User.create({
+                            name:user.name,
+                            email:user.email,
+                            image:user.image
+                        })
+                    }
+                    user.id = dbUser._id.toString()
+                    user.role = dbUser.role.toString()
+                    return true
+                } catch (error) {
+                    console.error("NextAuth Google SignIn DB Error:", error)
+                    return false
                 }
-                user.id = dbUser._id.toString()
-                user.role = dbUser.role.toString()
             }
             return true
             
@@ -93,6 +97,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         strategy:"jwt",
         maxAge:10*24*60*60*1000
     },
-    secret:process.env.AUTH_SECRET
-
+    trustHost: true,
+    secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
 })
